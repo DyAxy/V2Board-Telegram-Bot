@@ -3,7 +3,7 @@
 一个简单的项目，让 V2Board Telegram Bot 支持更丰富的功能。
 使用反馈、功能定制可加群：[https://t.me/dyPythonBot](https://t.me/dyPythonBot)
 
-Python 版本需求 >= 3.8
+Python 版本需求 >= 3.9
 
 ## 现有功能
 - 基于MySQL，支持以SSH方式登录
