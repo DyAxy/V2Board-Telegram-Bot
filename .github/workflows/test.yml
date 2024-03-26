@@ -1,0 +1,39 @@
+name: Python application
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout actions
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5 
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+
+      - name: Init Config
+        run: |
+          cp config.yml.example config.yml
+          sed -i '7s/123456789:gaefadklwdqojdoiqwjdiwqdo/${{ secrets.BOTTOKEN }}/' config.yml
+          sed -i '22s/password/${{ secrets.SQLPASS }}/' config.yml
+          sed -i '23s/database/${{ secrets.SQLDATA }}/' config.yml
+          sed -i '26s/false/true/' config.yml
+          sed -i '28s/passwd/pkey/' config.yml
+          sed -i '29s/127\.0\.0\.1/${{ secrets.SSHIP }}/' config.yml
+          echo '${{ secrets.SSHKEY }}' > sshkey.pem
+
+      - name: Test Bot
+        run: |
+          pip install -r requirements.txt
+          python bot.py
