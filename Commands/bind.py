@@ -34,7 +34,7 @@ async def exec(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                 await context.bot.edit_message_text('%s\n绑定请输入： /bind 订阅地址' % bot.text["fail"],chatId,msgId)
                 return
             # 判断该 userId 是否在库
-            userResult = onQuery("SELECT * FROM v2_user WHERE `telegram_id` = %s" % userId)
+            userResult = onQuery("SELECT id FROM v2_user WHERE `telegram_id` = %s" % userId)
             if len(userResult) > 0:
                 await context.bot.edit_message_text('%s\n你已经绑定过账号了！' % bot.text["fail"],chatId,msgId)
                 return
@@ -52,8 +52,7 @@ async def exec(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
                     return
                 else:
                     db = MysqlUtils(port=bot.port)
-                    db.update_one('v2_user', params={
-                        'telegram_id': userId}, conditions={'token': subInfo[1]})
+                    db.update_one('v2_user',{'telegram_id': userId},{'token': subInfo[1]})
                     db.conn.commit()
                     db.close()
                     await context.bot.edit_message_text('%s\n你已成功绑定 Telegram 了！' % bot.text["okay"],chatId,msgId)
