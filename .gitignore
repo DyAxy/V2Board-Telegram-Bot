@@ -1,4 +1,5 @@
 # Temp
+docker-compose.yml
 config.yml
 *.pem
 test/

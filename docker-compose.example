@@ -1,0 +1,52 @@
+name: v2board-telegram-bot
+
+services:
+  bot:
+    image: moefaq/v2board-telegram-bot
+    restart: always
+    environment:
+      TZ: Asia/Shanghai
+      # 网站地址
+      BOT_WEBSITE: https://awesomeV2Board.com
+      # 订阅地址
+      BOT_SUBLINK: https://awesomeV2Board.com
+      # Bot Token
+      BOT_TOKEN: 123456789:gaefadklwdqojdoiqwjdiwqdo
+      # 管理员ID、可以额外增加
+      BOT_ADMIN_ID: 0,0
+      # 群租ID
+      BOT_GROUP_ID: 0
+      # 自动删除时间，如果Bot可删信息
+      BOT_DELETE_TIME: 30
+      # 数据库信息
+      V2BOARD_DB_IP: 127.0.0.1
+      V2BOARD_DB_PORT: 3306
+      V2BOARD_DB_USER: root
+      V2BOARD_DB_PASS: password
+      V2BOARD_DB_NAME: database
+      # SSH 信息 false：默认关闭，true为启用
+      V2BOARD_SSH_ENABLE: false
+      # 连接类型支持 passwd / pkey
+      V2BOARD_SSH_TYPE: passwd
+      V2BOARD_SSH_IP: host.docker.internal
+      V2BOARD_SSH_PORT: 22
+      V2BOARD_SSH_USER: sshtunnel-agent-user
+      V2BOARD_SSH_PASS: 
+      # 连接类型为pkey时，请将私钥内容复制到进来
+      V2BOARD_SSH_KEY: |-
+        -----BEGIN OPENSSH PRIVATE KEY-----
+        exampleEXAMPLE1234567exampleEXAMPLE1234567exampleEXAMPLE1234567example
+        EXAMPLE1234567exampleEXAMPLE1234567exampleEXAMPLE1234567exampleEXAMPLE
+        1234567exampleEXAMPLE1234567exampleEXAMPLE1234567exampleEXAMPLE1234567
+        exampleEXAMPLE1234567exampleEXAMPLE1234567exampleEXAMPLE1234567example
+        EXAMPLE1234567exampleEXAMPLE1234
+        -----END OPENSSH PRIVATE KEY-----
+      # 私钥密码
+      V2BOARD_SSH_KEYPASS: 
+    networks:
+      - network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+networks:
+  network:
