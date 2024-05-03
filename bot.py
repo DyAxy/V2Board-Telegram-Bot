@@ -2,6 +2,7 @@
 import os
 import yaml
 import logging
+import initDB
 
 from datetime import time
 from sshtunnel import SSHTunnelForwarder
@@ -9,7 +10,7 @@ from sshtunnel import SSHTunnelForwarder
 from handler import MysqlUtils
 
 from telegram import BotCommand
-from telegram.ext import Application, CommandHandler, ContextTypes,Defaults
+from telegram.ext import Application, CommandHandler, ContextTypes, Defaults
 
 # Enable logging
 logging.basicConfig(
@@ -72,14 +73,16 @@ async def autoDelete(context: ContextTypes.DEFAULT_TYPE) -> None:
     except Exception as error:
         logging.info(error)
 
+
 async def setCommand(context: ContextTypes.DEFAULT_TYPE):
     await context.bot.delete_my_commands()
     await context.bot.set_my_commands(context.job.data)
-    
+
 
 def main():
     try:
-        app = Application.builder().token(config['bot']['token']).defaults(Defaults(parse_mode='HTML')).build()
+        app = Application.builder().token(config['bot']['token']).defaults(
+            Defaults(parse_mode='HTML')).build()
         # 导入命令文件夹
         import Commands
         command_list = []
@@ -104,7 +107,8 @@ def main():
             return
         app.run_polling(drop_pending_updates=True)
     except Exception as error:
-        logging.warning('无法启动 Telegram Bot，请确认 Bot Token 是否正确，或者是否能连接 Telegram 服务器')
+        logging.warning(
+            '无法启动 Telegram Bot，请确认 Bot Token 是否正确，或者是否能连接 Telegram 服务器')
         exit(1)
 
 
