@@ -69,6 +69,7 @@ def initDatabase():
                     for sqlScriptContent in sqlScriptContents:
                         db.cur.execute(sqlScriptContent)
                         db.conn.commit()
+            logging.info(f'Bot-Databases-Module: 数据库脚本执行完毕...')
         except Exception as err:
             logging.warning(f'Bot-Databases-Module: 数据库脚本执行错误 - {err}')
         finally:

@@ -88,15 +88,15 @@ def getUnNotifyValidOrders():
 def buildMsg(row) -> str:
 
     flow = [
-        f'<b>📠新的订单</b>',
-        f'',
-        f'<b>📧注册邮箱:</b> {row[0]}',
-        f'<b>📚套餐名称:</b> {row[1]}',
-        f'<b>💵支付方式:</b> {row[2]}',
-        f'<b>📥套餐类型:</b> {mapping['Type'][row[3]]}',
-        f'<b>📅套餐时长:</b> {mapping['Period'][row[4]]}',
-        f'<b>🏷套餐价格:</b> {round(row[5]/100, 2)}',
-        f'<b>🕰支付时间:</b> {fmtTime(row[6])}'
+        f"<b>📠新的订单</b>",
+        f"",
+        f"<b>📧注册邮箱:</b> {row[0]}",
+        f"<b>📚套餐名称:</b> {row[1]}",
+        f"<b>💵支付方式:</b> {row[2]}",
+        f"<b>📥套餐类型:</b> {mapping['Type'][row[3]]}",
+        f"<b>📅套餐时长:</b> {mapping['Period'][row[4]]}",
+        f"<b>🏷套餐价格:</b> {round(row[5]/100, 2)}",
+        f"<b>🕰支付时间:</b> {fmtTime(row[6])}"
     ]
     return '\n'.join(flow)
 
