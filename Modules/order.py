@@ -67,6 +67,16 @@ def onSqlExec(sql):
         db.close()
 
 
+def onSqlInsertMany(table: str, attrs: list, values: list):
+    try:
+        db = MysqlUtils(port=bot.port)
+        db.insert_many(table, attrs, values)
+    except Exception as err:
+        logging.warning(err)
+    finally:
+        db.close()
+
+
 def onUpdate(tableName, params, conditions):
     try:
         db = MysqlUtils(port=bot.port)
@@ -79,8 +89,16 @@ def onUpdate(tableName, params, conditions):
 
 def getUnNotifyValidOrders():
     try:
-        onSqlExec('INSERT INTO bot_modules_notify (`order_id`,`type`,`state`) SELECT `id`,1,0 FROM v2_order WHERE v2_order.total_amount<>0 AND v2_order.`status`=3 AND NOT EXISTS(SELECT order_id from bot_modules_notify WHERE bot_modules_notify.order_id=v2_order.id AND bot_modules_notify.type=1) ORDER BY `id` ASC')
-        return onQuery('SELECT v2_user.email,t_plan.`name`,t_payment.`name`,t_order.type,t_order.period,t_order.total_amount,t_order.paid_at,t_notify.id,t_notify.state FROM bot_modules_notify AS t_notify INNER JOIN v2_order AS t_order ON t_notify.order_id=t_order.id INNER JOIN v2_plan AS t_plan ON t_order.plan_id=t_plan.id INNER JOIN v2_payment AS t_payment ON t_order.payment_id=t_payment.id INNER JOIN v2_user ON t_order.user_id=v2_user.id WHERE t_notify.state=0')
+        validOrders = onQuery('SELECT `id`,1,0 FROM v2_order WHERE v2_order.total_amount<>0 AND v2_order.`status`=3 AND NOT EXISTS(SELECT order_id from bot_modules_notify WHERE bot_modules_notify.order_id=v2_order.id AND bot_modules_notify.type=1) ORDER BY `id` ASC')
+        if len(validOrders) > 0:
+            onSqlInsertMany(
+                'bot_modules_notify', ["order_id", "type", "state"], validOrders)
+
+        unNotifyValidOrders = onQuery('SELECT v2_user.email,t_plan.`name`,t_payment.`name`,t_order.type,t_order.period,t_order.total_amount,t_order.paid_at,t_notify.id,t_notify.state FROM bot_modules_notify AS t_notify INNER JOIN v2_order AS t_order ON t_notify.order_id=t_order.id INNER JOIN v2_plan AS t_plan ON t_order.plan_id=t_plan.id INNER JOIN v2_payment AS t_payment ON t_order.payment_id=t_payment.id INNER JOIN v2_user ON t_order.user_id=v2_user.id WHERE t_notify.state=0 AND t_notify.type=1')
+        if len(unNotifyValidOrders) > 0:
+            return unNotifyValidOrders
+        else:
+            return None
     except Exception as err:
         logging.warning(err)
 
@@ -102,12 +120,15 @@ def buildMsg(row) -> str:
 
 
 async def exec(context: ContextTypes.DEFAULT_TYPE):
-    rows = getUnNotifyValidOrders()
-    for row in rows:
-        try:
-            text = buildMsg(row)
-            for adminID in config['admin_id']:
-                await context.bot.send_message(adminID, text)
-            onUpdate('bot_modules_notify', {'state': 1}, {'id': row[7]})
-        except Exception as error:
-            logging.warning(error)
+    try:
+        rows = getUnNotifyValidOrders()
+        if rows is not None:
+            print(len(rows))
+            for row in rows:
+                text = buildMsg(row)
+                for adminID in config['admin_id']:
+                    print(text)
+                    await context.bot.send_message(adminID, text)
+                onUpdate('bot_modules_notify', {'state': 1}, {'id': row[7]})
+    except Exception as error:
+        logging.warning(error)
