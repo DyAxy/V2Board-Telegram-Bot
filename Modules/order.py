@@ -87,7 +87,7 @@ def onUpdate(tableName, params, conditions):
         db.close()
 
 
-def getUnNotifyValidOrders():
+async def getUnNotifyValidOrders():
     try:
         validOrders = onQuery('SELECT `id`,1,0 FROM v2_order WHERE v2_order.total_amount<>0 AND v2_order.`status`=3 AND NOT EXISTS(SELECT order_id from bot_modules_notify WHERE bot_modules_notify.order_id=v2_order.id AND bot_modules_notify.type=1) ORDER BY `id` ASC')
         if len(validOrders) > 0:
@@ -121,7 +121,7 @@ def buildMsg(row) -> str:
 
 async def exec(context: ContextTypes.DEFAULT_TYPE):
     try:
-        rows = getUnNotifyValidOrders()
+        rows = await getUnNotifyValidOrders()
         if rows is not None:
             print(len(rows))
             for row in rows:

@@ -14,7 +14,7 @@ from telegram.ext import Application, CommandHandler, ContextTypes, Defaults
 
 # Enable logging
 logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
+    format="%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s", level=logging.INFO
 )
 # set higher logging level for httpx to avoid all GET and POST requests being logged
 logging.getLogger("httpx").setLevel(logging.WARNING)
@@ -88,9 +88,9 @@ def main():
         command_list = []
         for i in Commands.content:
             cmds = getattr(Commands, i)
-            app.add_handler(CommandHandler(i, cmds.exec))
-            command_list.append(BotCommand(i, cmds.desc))
-        app.job_queue.run_once(setCommand, 1, command_list, 'setCommand')
+            app.add_handler(CommandHandler(i.removesuffix("_customized"), cmds.exec))
+            command_list.append(BotCommand(i.removesuffix("_customized"), cmds.desc))
+        app.job_queue.run_once(setCommand, 2, command_list, 'setCommand')
         # 导入任务文件夹
         import Modules
         for i in Modules.content:
