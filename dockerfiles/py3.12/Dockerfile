@@ -1,4 +1,4 @@
-FROM python:3.11-alpine AS build
+FROM python:3.12-alpine AS build
 ADD requirements.txt /build/requirements.txt
 WORKDIR /build
 RUN apk update
@@ -7,8 +7,8 @@ RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r ./requirements.txt
 RUN apk del .build-deps
 
-FROM python:3.11-alpine
-COPY --from=build /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+FROM python:3.12-alpine
+COPY --from=build /usr/local/lib/python3.12/site-packages /usr/local/lib/python3.12/site-packages
 RUN apk update
 RUN apk add --no-cache libstdc++
 ADD / /V2Board-Telegram-Bot
