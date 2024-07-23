@@ -1,7 +1,7 @@
 # V2Board Telegram Bot via Python
 
-一个简单的项目，让 V2Board Telegram Bot 支持更丰富的功能。
-使用反馈、功能定制可加群：[https://t.me/dyPythonBot](https://t.me/dyPythonBot)
+一个简单的项目，让 V2Board Telegram Bot 支持更丰富的功能。  
+使用反馈、功能定制可加群：[https://t.me/dyaogroup](https://t.me/dyaogroup)
 
 Python 版本需求 >= 3.9
 
